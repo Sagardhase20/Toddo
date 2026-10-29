@@ -1,0 +1,223 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Todo List</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f1f5f9;
+            min-height: 100vh;
+        }
+
+        header {
+            background: #101827;
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h2 {
+            margin-bottom: 5px;
+        }
+
+        header p {
+            color: #cbd5e1;
+            font-size: 13px;
+        }
+
+        .logout {
+            background: #ef4444;
+            color: white;
+            padding: 10px 16px;
+            border-radius: 6px;
+            border: none;
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 40px auto;
+            padding: 25px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px #00000010;
+        }
+
+        h3 {
+            margin-bottom: 20px;
+            color: #1e293b;
+        }
+
+        .task-form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .task-form input {
+            flex: 1;
+            min-width: 0;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 15px;
+        }
+
+        button {
+            border: none;
+            padding: 12px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            color: white;
+            background: #4f46e5;
+        }
+
+        .task {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding: 15px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .task label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            overflow-wrap: anywhere;
+        }
+
+        .task input[type="checkbox"] {
+            width: 17px;
+            height: 17px;
+        }
+
+        .completed {
+            text-decoration: line-through;
+            color: #94a3b8;
+        }
+
+        .delete {
+            background: #ef4444;
+            padding: 8px 12px;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                margin: 20px 12px;
+                padding: 18px;
+            }
+
+            header {
+                padding: 16px;
+            }
+
+            .task-form {
+                flex-wrap: wrap;
+            }
+
+            .task-form input {
+                width: 100%;
+                flex-basis: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div>
+            <h2>My Todo List</h2>
+            <p>Stay organized. Get things done.</p>
+        </div>
+
+        <form action="{% url 'logout' %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="logout">Logout</button>
+        </form>
+    </header>
+
+    <div class="container">
+        <h3>Today's Tasks</h3>
+
+        <form class="task-form" id="taskForm">
+            <input
+                type="text"
+                id="taskInput"
+                placeholder="Enter a new task..."
+                required
+            >
+            <button type="submit">+ Add Task</button>
+        </form>
+
+        <div id="taskList"></div>
+    </div>
+
+    <script>
+        const taskForm = document.getElementById("taskForm");
+        const taskInput = document.getElementById("taskInput");
+        const taskList = document.getElementById("taskList");
+
+        taskForm.addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const taskName = taskInput.value.trim();
+
+            if (taskName === "") {
+                return;
+            }
+
+            const task = document.createElement("div");
+            task.className = "task";
+
+            const label = document.createElement("label");
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+
+            const taskText = document.createElement("span");
+            taskText.textContent = taskName;
+
+            checkbox.addEventListener("change", function() {
+                taskText.classList.toggle(
+                    "completed",
+                    checkbox.checked
+                );
+            });
+
+            label.append(checkbox, taskText);
+
+            const deleteButton = document.createElement("button");
+            deleteButton.type = "button";
+            deleteButton.textContent = "Delete";
+            deleteButton.className = "delete";
+
+            deleteButton.addEventListener("click", function() {
+                task.remove();
+            });
+
+            task.append(label, deleteButton);
+            taskList.appendChild(task);
+
+            taskInput.value = "";
+            taskInput.focus();
+        });
+    </script>
+
+</body>
+</html>
