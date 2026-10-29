@@ -10,5 +10,6 @@ urlpatterns = [
     path('signup/', views.signup, name='sign'),
     path('todo/', views.todo_list, name='todo'),
     path('logout/', views.logout_view, name='logout'),
-    # path('Task/', views.Task_list, name='task_list'),
+    # path('Task/', views.Task_list, name='task_list'),   
+   # print(sagar);
 ]
